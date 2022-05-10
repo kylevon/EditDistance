@@ -1,0 +1,118 @@
+%Configs
+    \documentclass{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage[spanish]{babel}
+    \usepackage{graphicx}
+    \usepackage{hyperref}
+    \graphicspath{ {./img/} }
+    \usepackage{ amssymb }
+    \usepackage{amsthm}
+    \usepackage{amsmath}
+    \usepackage{mathtools}
+    \setlength{\parindent}{0pt}
+    \newcommand{\abs}[1]{\left|#1\right|}
+    \newcommand{\set}[1]{\left\{#1\right\}}
+    \newcommand{\st}{\ \vline \ }
+    \usepackage{ stmaryrd }
+    \newcommand{\dbrack}[1]{\left\llbracket#1\right\rrbracket}
+    \newcommand{\exercise}[1]{\hrulefill \ \textsc{Edit distance}\ \hrulefill \newline}
+    \newcommand{\defeq}{\vcentcolon=}
+    \newtheorem{lemma}{Lemma}
+    \newtheorem{definition}{Definition}
+    \newtheorem{theorem}{Theorem}
+
+    %\addtolength{\oddsidemargin}{0.7in}
+    \addtolength{\topmargin}{-.875in}
+	\addtolength{\textheight}{1.75in}
+    \addtolength{\oddsidemargin}{-.875in}
+	\addtolength{\evensidemargin}{-.875in}
+	\addtolength{\textwidth}{1.75in}
+    \marginparwidth=150pt
+
+
+    \marginparwidth=150pt
+
+\begin{document}
+
+\begin{center}
+    \Huge
+    \textbf{Edit Distance}
+    \vspace{10pt}
+    \hrule
+    \vspace{10pt}
+    \huge
+    \normalsize
+\end{center}
+
+\section{The Edit Distance Problem}
+
+\subsection*{Definition of a ref-word}
+
+Given a finite set of variables $V \subseteq \mathrm{SVars}$ we define the alphabet of ref words as: $\Gamma_V \defeq \set{x\vdash, \dashv x}$. And given an alphabet $\Sigma$ such that $\Sigma \cap \Gamma_V = \varnothing$ we can define the set of ref words over $\Sigma$ and $V$ as: $\mathbf{r} \in (\Sigma \cup \Gamma_V)^*$. Next, a ref-word is valid if and only if, every occurance of a variable in the ref-word is opened exactly once and closed afterwards, exactly once.
+
+\subsection*{Functions on ref-words}
+
+We can define the projection of a ref word over a set $S$, $r\uparrow S$, recursively as:\footnote{In the paper (Doleschal, 2021) this operation is defined for $\Sigma$ as doc($\sigma$)}
+
+\begin{enumerate}
+    \item $r \in S \rightarrow r\uparrow S = r$
+    \item $r \not\in S \rightarrow r \uparrow  S = \epsilon$
+    \item $ (r_1 \cdot r_2) \uparrow  S = (r_1 \uparrow  S) \cdot (r_2 \uparrow  S)$
+
+\end{enumerate}
+
+Vars(r) is the set of variables $x \in V$ that occurs in the ref-word:
+
+        \begin{equation}
+            \mathrm{Vars}(r) := \set{x \in V \st \exists r_x^{pre}, r_x, r_x^{post} \in (\Sigma \cup \Gamma_V)^* \mathrm{\ such\ that\ }r = r_x^{pre} \cdot x \vdash \cdot r_x \cdot \dashv x \cdot r_x^{post})}
+        \end{equation}
+
+$\mathrm{tup}(r)$ are the positions each ref-word is referencing, and is defined as:
+
+\begin{equation}
+    \mathrm{tup}(r) := \set{x \mapsto [i_x, j_x\rangle \st x \in Vars(R), i_x = \abs{r_x^{pre} \uparrow \Sigma}, j_x = i_x + \abs{r_x \uparrow \Sigma}}
+\end{equation}
+
+\textbf{Postulate:} 
+\begin{equation}
+    \mathrm{valid}(r) \rightarrow \abs{\mathrm{tup}(r)} = \abs{\mathrm{Vars}(r)}
+\end{equation}
+\subsection*{Definition of ref-word tuple}
+
+\subsection*{Distance between two ref words}
+
+
+Next, given two ref words $r_1, r_2 \in (\Sigma \cup \Gamma_V)$ and
+a distance function 
+$\mathbf{d} : \Sigma^* \times \Sigma^* \rightarrow \mathbb{R}$
+the distance $\mathbf{d_\Gamma}$ between $r_1$ and $r_2$
+is defined as: $\mathbf{d_\Gamma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
+\Sigma, r_2 \uparrow \Sigma)$
+
+\subsection*{Ref-word distance languages}
+
+Given a ref-word language reference $L_{ref} \subseteq (\Sigma\cup\Gamma_V)^*$ and a distance $k \in R$, the k-distance ref-word language reference is defined as
+
+\begin{equation}
+    \dbrack{L_{ref}}^k_{ref} = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in L_{ref} \land \mathbf{d_\Gamma}(r, r') \leq k)}
+\end{equation}
+
+Given a document d, the k-distance ref-word language is:
+
+\begin{equation}
+    \dbrack{L_{ref}}^k_d = \set{\mathrm{tup}(r) \st r\uparrow \Sigma = d, \exists r' \in L_{ref} ( \mathbf{d_{\Gamma}}(r, r') \leq k)}
+\end{equation}
+
+\subsection*{Postulates}
+
+\begin{equation}
+    \dbrack{\dbrack{A}_{ref}^{k_1}}_{ref}^{k_2} = \dbrack{A}_{ref}^{k_1 + k_2}
+\end{equation}
+
+\begin{equation}
+    \dbrack{\dbrack{A}^{k}_{ref}}^{0}_d = \dbrack{A}^k_d
+\end{equation}
+
+
+
+\end{document}
