@@ -253,8 +253,8 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
         \item \begin{equation*}
             \rho_{A\pm 1} = f(q_0) \trans{c_1}
             f(\phi_1) \cdot\cdot\cdot
-            \trans{c_{a}} f'(\phi_a)
-            \trans{c_{a+1}} f'(\phi_{a})  \cdot
+            \trans{c_{a-1}} f(\phi_{a-1})
+            \trans{c_{a}} f'(\phi_{a-1})  \cdot
             \cdot \cdot \trans{c_n} f'(\phi_{n-1})
               \end{equation*}
         \item \begin{equation*}
@@ -291,15 +291,21 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 	For purposes of contradiction let's assume that there exists
 	a ref-word $r = c_1 \cdot \cdot\cdot c_n \in A \pm 1$ that
 	is not valid. Then there must exist a run $\rho_{A\pm 1}$
-	on r. Furthermore, If $r = c_1 \cdot\cdot\cdot c_n$ is not
-	valid, then there are two cases:
+    on r, and furthermore, by lemma \ref{LemmaTypesOfRuns}, $\rho_{A\pm1}$
+    it can have only 4 structures. We will prove by enumeration that all
+    these structures lead to a contradicton.
     \begin{enumerate}
-	    \item $\exists c_i, c_j$ such that $i < j$ and $c_i =
-            x\dashv, c_j = x\vdash$
-
-    Under the first case of lemma \ref{LemmaTypesOfRuns}, $c_a \not \in \Gamma_V$ from the definition of $A \pm 1$. Therefore, 
-
-            \item $\exists c_i, c_j$ such that $c_i = c_j \in \Gamma_V$
+        \item \textbf{Insertion}: By definition of the transitions
+        of $A \pm 1$, we have that $c_1 \cdot\cdot\cdot c_{a-1}
+        \cdot c_{a+1} \cdot\cdot\cdot c_{n} \in \mathcal{R}(A)$.
+        This ref-word is valid by the premise of the theorem. Next,
+        $c_a$ cannot be in $\Gamma_V$, and therefore we have a
+        contradiction, because variables in all other characters
+        open exactly once, and close exactly once only after they
+        are opened by the definition of a valid ref-word.
+        \item \textbf{Substitution}
+        \item \textbf{Elimination}
+        \item \textbf{No modification}
         \end{enumerate}
     \end{proof}
 \end{theorem}
@@ -320,26 +326,40 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
     \begin{enumerate}
         \item \textbf{Insertion:} From the definition of $A \pm 1$, there must be a transition from $\phi_a$ to $\phi_{a+1}$ using the letter $a + 1$. Therefore, there is a run:
         \begin{equation*}
-            q_0 \trans{c_1} \cdot\cdot\cdot\trans{c_{a}}\phi_a \trans{c_{a+2}} \phi_{a + 1} \cdot\cdot\cdot \trans{c_n} \phi_{n - 1}
+            q_0 \trans{c_1} \cdot\cdot\cdot\trans{c_{a-1}}\phi_{a-1} \trans{c_{a+1}} \phi_{a} \cdot\cdot\cdot \trans{c_n} \phi_{n - 1}
         \end{equation*}
 
-            And therefore, $c_1 \cdot\cdot\cdot c_a \cdot c_{a+2} \cdot\cdot\cdot c_n \in \mathcal{R}(A)$. And because there is a Levenshtein distance of 1 with r, and r is valid, then $r \in \mathcal{R}(A) \pm 1$
+	    And therefore, $c_1 \cdot\cdot\cdot c_a \cdot c_{a+2}
+	    \cdot\cdot\cdot c_n \in \mathcal{R}(A)$. And because
+	    there is a Levenshtein distance of 1 with r, and r is
+	    valid, then $r \in \mathcal{R}(A) \pm 1$
             
         \item \textbf{Substitution}
         \item \textbf{Elimination}
         \item \textbf{No modification}: In this case, we can obtain a run over the same word
             in $\mathcal{R}(A)$, and therefore, by definition of $\mathcal{R}(A)
             \pm 1$ we obtain that $r \in \mathcal{R}(A)$
-     \textbf{Insertion}
-		\begin{equation}
-		    \rho_{A\pm 1} = f(q_0) \trans{c_1}
-		    f(\phi_1) \cdot\cdot\cdot\trans{c_{i-1}}
-		    f(\phi_i) \trans{c_{i}} f'(\phi_i)
-		    \trans{c_{i+1}} f'(\phi_{i + 1})  \cdot
-		    \cdot \cdot \trans{c_n} f'(\phi_n)
-		\end{equation}
 	    \end{enumerate}
 
+
+
+        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
+        \begin{enumerate}
+            \item $\mathbf{d_\Gamma}(r, r') = 0$. Then it is clear
+            that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A
+            \pm 1$ forms an isomorphism with $A$.
+
+            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case,
+            because of the structure of Levenshtein's distance,
+            there are three possible cases:
+
+            \begin{itemize}
+                \item \textbf{Insertion}. In this case the word r looks like:
+                    $c_1 \cdot\cdot\cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot\cdot\cdot c_n$
+                \item \textbf{Substitution}
+                \item \textbf{Elimination}
+            \end{itemize}
+        \end{enumerate}
     \end{proof}
 \end{theorem}
 
