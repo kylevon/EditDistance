@@ -1,7 +1,7 @@
 %Configs
     \documentclass{article}
     \usepackage[utf8]{inputenc}
-    \usepackage[spanish]{babel}
+    %\usepackage[spanish]{babel}
     \usepackage{graphicx}
     \usepackage{hyperref}
     \graphicspath{ {./img/} }
@@ -12,14 +12,17 @@
     \setlength{\parindent}{0pt}
     \newcommand{\abs}[1]{\left|#1\right|}
     \newcommand{\set}[1]{\left\{#1\right\}}
+    \newcommand{\paren}[1]{\left(#1\right)}
     \newcommand{\st}{\ \vline \ }
     \usepackage{ stmaryrd }
     \newcommand{\dbrack}[1]{\left\llbracket#1\right\rrbracket}
     \newcommand{\exercise}[1]{\hrulefill \ \textsc{Edit distance}\ \hrulefill \newline}
     \newcommand{\defeq}{\vcentcolon=}
+    \newcommand{\ra}{\rightarrow}
+    \newcommand{\lra}{\longrightarrow}
     \newtheorem{lemma}{Lemma}
-    \newtheorem{definition}{Definition}
     \newtheorem{theorem}{Theorem}
+    \newtheorem{definition}{Definition}
 
     %\addtolength{\oddsidemargin}{0.7in}
     \addtolength{\topmargin}{-.875in}
@@ -91,28 +94,159 @@ is defined as: $\mathbf{d_\Gamma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
 
 \subsection*{Ref-word distance languages}
 
-Given a ref-word language reference $L_{ref} \subseteq (\Sigma\cup\Gamma_V)^*$ and a distance $k \in R$, the k-distance ref-word language reference is defined as
+Given a ref-word language $R \subseteq (\Sigma\cup\Gamma_V)^*$ and a distance $k \in \mathbb{R}$, the k-distance ref-word language is defined as:
 
 \begin{equation}
-    \dbrack{L_{ref}}^k_{ref} = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in L_{ref} \land \mathbf{d_\Gamma}(r, r') \leq k)}
+    R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \land \mathbf{d_\Gamma}(r, r') \leq k)}
 \end{equation}
 
-Given a document d, the k-distance ref-word language is:
+Given a document d, the spanner over a ref-word language R is:
 
 \begin{equation}
-    \dbrack{L_{ref}}^k_d = \set{\mathrm{tup}(r) \st r\uparrow \Sigma = d, \exists r' \in L_{ref} ( \mathbf{d_{\Gamma}}(r, r') \leq k)}
+    \dbrack{R}_d = \set{\mathrm{tup}(r) \st r\uparrow \Sigma = d, \exists r \in R}
 \end{equation}
 
-\subsection*{Postulates}
+\newpage
+\begin{theorem}
+    If the distance function $\mathbf{d}$ is a metric, then:
+    \begin{equation}
+        (R\pm n) \pm k = R\pm(n + k)
+    \end{equation}
+    \begin{proof}
+        Given $n, k \in \mathbb{R}$, we want to prove that: $(R\pm n )\pm k = R \pm (n + k)$.
+        By definition, we have that:
+        \begin{equation*}
+            (R \pm n) \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \pm n \land \mathbf{d_\Gamma}(r, r') \leq k)}
+        \end{equation*}
+        First we prove that $(R \pm n) \pm k \subseteq R \pm (n + k)$. By contradiction let's assume there exists an element $r_1 \in (R \pm n) \pm k$ such that $r_1 \notin R\pm (n + k)$. By the previous definition, we have that $\exists r' \in R\pm n$ such that $\mathbf{d_\Gamma}(r_1, r') \leq k$. By definition of $R \pm (n)$ we have that for any $r \in R$, $\mathbf{d_\Gamma}(r', r) \leq n$. Next, by the definition of $R \pm (n + k)$, and our suposition we have that $\mathbf{d_\Gamma}(r_1, r) > n + k$ which contradicts the triangle inequality. The proof that $R \pm (n + k) \subseteq (R \pm n) \pm k$ uses this same argument.
+
+    \end{proof}
+\end{theorem}
+
+
+% Sea A vset automaton. 
+% Exists A^k s.t. 
+% Def lenguaje autómata
+% [[B]_d = [[L(A)]]]^k_d
+% Definir con vset automata. con el de ref words
+% Definir L(A)
+% Definir functional, sequential
+% Demostrar [[B]]_d = [[L(A)]]^k_d.
+%  Al definir B con los edit distances
+% Demostrar que si A es functional
+% B es functional también.
+
+% Tamaño del determinación
+% Ver las transiciones con cierra y abre x's
+
+\subsection*{Variable-set automaton over ref words (VSet-automaton)\footnote{(Doleschal, 2021)}}
+
+
+\begin{definition}
+A VSet-automaton is a sextuple $A:=(\Sigma, V, Q, q_0, Q_F,\delta)$
+\begin{itemize}
+    \item $\Sigma$: Alphabet symbols
+    \item $V$: Finite set of variables
+    \item $Q$: Finite set of states
+    \item $q_0\in Q$: Initial state
+    \item $Q_F\subseteq Q$: Set of final states
+    \item $\delta: Q \times (\Sigma\cup\set{\epsilon}\cup\Gamma_V)\ra 2^Q$: Transition function
+        \begin{itemize}
+            \item $\Gamma_V:=\set{x\vdash, \dashv x \st x \in V}$
+            \item $2^Q$: power set of Q
+        \end{itemize}
+\end{itemize}
+\end{definition}
+
+\subsubsection*{Functions over VSet-automaton}
 
 \begin{equation}
-    \dbrack{\dbrack{A}_{ref}^{k_1}}_{ref}^{k_2} = \dbrack{A}_{ref}^{k_1 + k_2}
+    |A| = |Q| + |Q_F| + |\delta| + 1
 \end{equation}
 
 \begin{equation}
-    \dbrack{\dbrack{A}^{k}_{ref}}^{0}_d = \dbrack{A}^k_d
+    Vars(A) := V
 \end{equation}
 
+\subsubsection*{Ref-word language}
+The ref-word language of A is: $\mathcal{R}(A) = \mathcal{R}^0(A) = \set{r \in \mathcal{L}(A)\subseteq(\Sigma\cup\Gamma_V)^*\st r\mathrm{\ is\ accepted\ by\ the\ \epsilon-NFA\ A}}$. This is direct from interpreting A as an $\epsilon-NFA$.
 
+\subsubsection*{Run of a VSet-automaton over a ref-word}
+
+Given a ref-word $r = \sigma_1\cdot\cdot\cdot\sigma_n$, the run $\rho$ of $A$ is the sequence:
+
+\begin{equation}
+    \rho:=q_0\overset{\sigma_1}{\lra}q_1 \cdot\cdot\cdot q_{n-1} \overset{\sigma_n}{\lra}q_n
+\end{equation}
+
+Where $\forall i \in [0,n)\paren{q_{i+1} \in \delta(q_i,\sigma_{i+1})}$ and $q_n\in Q_F$ 
+
+From previous publications we know that $r \in \mathcal{R}(A)$ if and only if there is a run $\rho$ of A on r.
+
+\newpage
+\subsubsection*{Distance automaton}
+
+Given a VSet-automaton $A$ we can define, under Levenshtein distance, the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
+\begin{itemize}
+    \item $Q' = \set{q_1,...,q_{\abs{Q}}} \cup \set{q^{1}_1, ..., q^{1}_{\abs{Q}}} $ Where there exists two biyective functions:
+
+        \begin{enumerate}
+            \item $f: Q \ra \set{q_1,...,q_{\abs{Q}}}$ 
+            \item $f' : Q \ra \set{q^{1}_1, ..., q^{1}_{\abs{Q}}}$
+        \end{enumerate}
+
+        And two biyective functions $F$ and $F'$ that map $f$ and $f'$ respectively to sets.
+
+    \item $q_0' = f(q_0)$
+
+    \item $Q_F' = Q_F \cup \set{q^1_i \st q_j \in Q_F \land f'(q_j) = q_i^1}$
+    \item The function $\delta'$ is defined by:
+
+        \begin{equation*}
+        \delta'(q_i, e) = \begin{cases}
+            F(\delta(f^{-1}(q_i), e)) & e \in \Gamma_V\\
+                            F(\delta(f^{-1}(q_i), e)) \cup q_i^1\cup \underset{a \in \Sigma}{\bigcup} F'(\delta(f^{-1}(q_i), a)) & e.o.c
+                          \end{cases}
+        \end{equation*}
+        \begin{equation*}
+            \delta'(q_i^1, e) = F(\delta(f^{-1}(q_i), e))
+        \end{equation*}
+\end{itemize}
+\begin{theorem}
+    Given a VSet-automaton with a sequential ref-word language $\mathcal{R}(A)$, using Levenshtein distance we obtain that $\mathcal{R}(A \pm 1) = \mathcal{R}(A) \pm 1$
+
+    \begin{proof}
+        This is equivalent to proving that, given a refword $r$, $r \in \mathcal{R}(A \pm 1) \leftrightarrow r \in \mathcal{R}(A)\pm 1$. Therefore this is a two part proof.
+
+        First let's assume that $r \in \mathcal{R}(A \pm 1)$. In that case we know that there must exist a run $\rho$ of $A \pm 1$ on r. First, by definition of $\delta'$ there is no transition from states of the form $q_i^1$ to $q_i$. Therefore, there are two cases:
+        \begin{enumerate}
+            \item There are only states of the form $q_i$. In this case, the subset of nodes and transitions used have an isomorphism to $A$ using the function $f$, therefore, $r \in \mathcal{R}(A)$, and therefore $r \in \mathcal{R}(A) \pm 1$
+            \item There is one transition from a state of the form $q_i$ to $q_i^1$: \textbf{TODO}
+        \end{enumerate}
+
+        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
+        \begin{enumerate}
+            \item $\mathbf{d_\Gamma}(r, r') = 0$. Then it is clear that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A \pm 1$ forms an isomorphism with $A$.
+            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case, there are three possible cases:
+                \begin{enumerate}
+                    \item $ r = c_1 \cdot ... \cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot ... \cdot c_n$  And $r' = c_1 \cdot ... \cdot c_n$
+
+                        In this case, because there exists a run $\rho_A$ on $r'$ of the form:
+                        \begin{equation*}
+                            \rho_A = q_0 \overset{c_1}{\lra} \phi_1 \cdot\cdot\cdot \phi_i \overset{c_i}{\lra} \phi_{i + 1}  \cdot \cdot \cdot \overset{c_n} \phi_n
+                        \end{equation*}
+
+                        Therefore there exists a run $\rho_{A\pm1}$ on $r$, and it is:
+
+                        \begin{equation*}
+                            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra} f(\phi_1) \cdot\cdot\cdot f(\phi_i) \overset{c_{ins}}{\lra} f'(\phi_i) \overset{c_i}{\lra} f'(\phi_{i + 1})  \cdot \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+                        \end{equation*}
+                        \item Same as above
+                        \item Same as above
+                \end{enumerate}
+        \end{enumerate}
+        % Interpreting $A\pm 1$ as an $\epsilon - NFA$, we can conclude that for every $r \in \mathcal{R}(A\pm 1)$ there is a run $\rho$ of $A$ on $r$.
+    \end{proof}
+\end{theorem}
 
 \end{document}
