@@ -221,15 +221,36 @@ Given a VSet-automaton $A$ we can define, under Levenshtein distance, the automa
         First let's assume that $r \in \mathcal{R}(A \pm 1)$. In that case we know that there must exist a run $\rho$ of $A \pm 1$ on r. First, by definition of $\delta'$ there is no transition from states of the form $q_i^1$ to $q_i$. Therefore, there are two cases:
         \begin{enumerate}
             \item There are only states of the form $q_i$. In this case, the subset of nodes and transitions used have an isomorphism to $A$ using the function $f$, therefore, $r \in \mathcal{R}(A)$, and therefore $r \in \mathcal{R}(A) \pm 1$
-            \item There is one transition from a state of the form $q_i$ to $q_i^1$: \textbf{TODO}
+            \item There is one transition from a state of the form $q_i$ to $q_i^1$. The respective run of $A \pm 1$ on $r = c_1 \cdot \cdot \cdot c_n$ could have one of three forms:
+
+ \textbf{Insertion}
+            \begin{equation}
+                \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra} f(\phi_1) \cdot\cdot\cdot\overset{c_{i-1}}{\lra} f(\phi_i) \overset{c_{i}}{\lra} f'(\phi_i) \overset{c_{i+1}}{\lra} f'(\phi_{i + 1})  \cdot \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+            \end{equation}
         \end{enumerate}
+
+    In this case, there exists a run:
+
+        \begin{equation}
+            \rho_{A\pm 1} = q_0 \overset{c_1}{\lra} \phi_1 \cdot\cdot\cdot \overset{c_{i-1}}{\lra}\phi_i  \overset{c_{i+1}}{\lra} \phi_{i + 1}  \cdot \cdot \cdot \overset{c_n}{\lra} \phi_n
+        \end{equation}
+
+        Such that every transition is in $A$, therefore the word $r'=c_1\cdot\cdot\cdot c_{i-1} \cdot c_{i+1} \cdot \cdot\cdot c_n$ is in $\mathcal{R}(A)$. And therefore by Levenshtein distance we obtain that $\mathbf{d_\Gamma}(r',r) = 1$. Andtherefore, $r \in \mathcal{R}(A) \pm 1$
+
+\textbf{Substitution}
+
+TODO
+
+        \textbf{Elimination}
+
+        TODO
 
         Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
         \begin{enumerate}
             \item $\mathbf{d_\Gamma}(r, r') = 0$. Then it is clear that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A \pm 1$ forms an isomorphism with $A$.
-            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case, there are three possible cases:
+            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case, because of the structure of Levenshtein's distance, there are three possible cases:
                 \begin{enumerate}
-                    \item $ r = c_1 \cdot ... \cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot ... \cdot c_n$  And $r' = c_1 \cdot ... \cdot c_n$
+                    \item \textbf{Insertion} $ r = c_1 \cdot ... \cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot ... \cdot c_n$  And $r' = c_1 \cdot ... \cdot c_n$
 
                         In this case, because there exists a run $\rho_A$ on $r'$ of the form:
                         \begin{equation*}
@@ -241,8 +262,8 @@ Given a VSet-automaton $A$ we can define, under Levenshtein distance, the automa
                         \begin{equation*}
                             \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra} f(\phi_1) \cdot\cdot\cdot f(\phi_i) \overset{c_{ins}}{\lra} f'(\phi_i) \overset{c_i}{\lra} f'(\phi_{i + 1})  \cdot \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
                         \end{equation*}
-                        \item Same as above
-                        \item Same as above
+                    \item \textbf{Elimination } TODO, Same as above
+                    \item \textbf{Substitution} TODO, Same as above
                 \end{enumerate}
         \end{enumerate}
         % Interpreting $A\pm 1$ as an $\epsilon - NFA$, we can conclude that for every $r \in \mathcal{R}(A\pm 1)$ there is a run $\rho$ of $A$ on $r$.
