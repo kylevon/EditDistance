@@ -17,6 +17,7 @@
     \usepackage{ stmaryrd }
     \newcommand{\dbrack}[1]{\left\llbracket#1\right\rrbracket}
     \newcommand{\exercise}[1]{\hrulefill \ \textsc{Edit distance}\ \hrulefill \newline}
+    \newcommand{\trans}[1]{\overset{#1}{\longrightarrow}}
     \newcommand{\defeq}{\vcentcolon=}
     \newcommand{\ra}{\rightarrow}
     \newcommand{\lra}{\longrightarrow}
@@ -70,7 +71,6 @@ operation is defined for $\Sigma$ as doc($\sigma$)}
     \item $r \in S \rightarrow r\uparrow S = r$
     \item $r \not\in S \rightarrow r \uparrow  S = \epsilon$
     \item $ (r_1 \cdot r_2) \uparrow  S = (r_1 \uparrow  S) \cdot (r_2 \uparrow  S)$
-
 \end{enumerate}
 
 Vars(r) is the set of variables $x \in V$ that occurs in the ref-word:
@@ -193,8 +193,8 @@ Given a ref-word $r = \sigma_1\cdot\cdot\cdot\sigma_n$, the run
 $\rho$ of $A$ is the sequence:
 
 \begin{equation}
-    \rho:=q_0\overset{\sigma_1}{\lra}q_1 \cdot\cdot\cdot q_{n-1}
-    \overset{\sigma_n}{\lra}q_n
+    \rho:=q_0\trans{\sigma_1}q_1 \cdot\cdot\cdot q_{n-1}
+    \trans{\sigma_n}q_n
 \end{equation}
 
 Where $\forall i \in [0,n)\paren{q_{i+1} \in \delta(q_i,\sigma_{i+1})}$
@@ -251,30 +251,30 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
     All runs of $\mathcal{R}(A)$ have one of the following structures:
     \begin{enumerate}
         \item \begin{equation*}
-            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
-            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
-            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_a)
-            \overset{c_{a+1}}{\lra} f'(\phi_{a + 1})  \cdot
-            \cdot \cdot \overset{c_n}{\lra} f'(\phi_{n-1})
+            \rho_{A\pm 1} = f(q_0) \trans{c_1}
+            f(\phi_1) \cdot\cdot\cdot
+            \trans{c_{a}} f'(\phi_a)
+            \trans{c_{a+1}} f'(\phi_{a})  \cdot
+            \cdot \cdot \trans{c_n} f'(\phi_{n-1})
               \end{equation*}
         \item \begin{equation*}
-            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
-            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
-            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_{a+1})
-            \overset{c_{a+1}}{\lra} f'(\phi_{a + 2})  \cdot
-            \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+            \rho_{A\pm 1} = f(q_0) \trans{c_1}
+            f(\phi_1) \cdot\cdot\cdot\trans{c_{a-1}}
+            f(\phi_a) \trans{c_{a}} f'(\phi_{a+1})
+            \trans{c_{a+1}} f'(\phi_{a + 2})  \cdot
+            \cdot \cdot \trans{c_n} f'(\phi_n)
               \end{equation*}
         \item \begin{equation*}
-            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
-            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
-            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_{a+2})
+            \rho_{A\pm 1} = f(q_0) \trans{c_1}
+            f(\phi_1) \cdot\cdot\cdot\trans{c_{a-1}}
+            f(\phi_a) \trans{\epsilon} {f'(\phi_{a + 1})} \trans{c_{a}} f'(\phi_{a+2})
               \cdot
-            \cdot \cdot \overset{c_n}{\lra} f'(\phi_{n + 1})
+            \cdot \cdot \trans{c_n} f'(\phi_{n + 1})
               \end{equation*}
         \item \begin{equation*}
-                \rho_{A\pm1} = f(q_0) \overset{c_1}{\lra} f(\phi_1)
-                \overset{c_2}{\lra} \cdot\cdot\cdot
-                \overset{c_n}{\lra}f(\phi_n)
+                \rho_{A\pm1} = f(q_0) \trans{c_1} f(\phi_1)
+                \trans{c_2} \cdot\cdot\cdot
+                \trans{c_n}f(\phi_n)
               \end{equation*}
     \end{enumerate}
     \begin{proof}
@@ -283,7 +283,7 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
     \end{proof}
 \end{lemma}
 
-\begin{theorem} \label{TheoremAutomatonPM1}
+\begin{theorem} \label{TheoremApm1Sequential}
     if $\mathcal{R}(A)$ if sequential, then $\mathcal{R}(A \pm 1)$.
     is sequential.
     
@@ -316,76 +316,30 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 	First let's assume that $r \in \mathcal{R}(A \pm 1)$. In
 	that case we know that there must exist a run $\rho$ of $A
     \pm 1$ on r. r is valid due to the theorem \ref{TheoremApm1Sequential}.
-    By definition of $\delta'$
-	there is no transition from states of the form $q_i^1$ to
-	$q_i$.  Therefore, there are two cases:
-        \begin{enumerate}
-	    \item There are only states of the form $q_i$. In this
-            case, the subset of nodes and transitions used have an
-            isomorphism to $A$ using the function $f$, therefore,
-            $r \in \mathcal{R}(A)$, using this and that r is valid
-            we conclude that that$r \in \mathcal{R}(A) \pm 1$
-	    \item There is one transition from a state of the form
-            $q_i$ to $q_i^1$. The respective run of $A \pm 1$ on
-            $r = c_1 \cdot \cdot \cdot c_n$ could have one of three
-            forms:
+        By Lemma \ref{LemmaTypesOfRuns} we have four cases for runs of $\mathcal{R}(a)$, We will now prove by enumeration on these cases:
+    \begin{enumerate}
+        \item \textbf{Insertion:} From the definition of $A \pm 1$, there must be a transition from $\phi_a$ to $\phi_{a+1}$ using the letter $a + 1$. Therefore, there is a run:
+        \begin{equation*}
+            q_0 \trans{c_1} \cdot\cdot\cdot\trans{c_{a}}\phi_a \trans{c_{a+2}} \phi_{a + 1} \cdot\cdot\cdot \trans{c_n} \phi_{n - 1}
+        \end{equation*}
 
+            And therefore, $c_1 \cdot\cdot\cdot c_a \cdot c_{a+2} \cdot\cdot\cdot c_n \in \mathcal{R}(A)$. And because there is a Levenshtein distance of 1 with r, and r is valid, then $r \in \mathcal{R}(A) \pm 1$
+            
+        \item \textbf{Substitution}
+        \item \textbf{Elimination}
+        \item \textbf{No modification}: In this case, we can obtain a run over the same word
+            in $\mathcal{R}(A)$, and therefore, by definition of $\mathcal{R}(A)
+            \pm 1$ we obtain that $r \in \mathcal{R}(A)$
      \textbf{Insertion}
 		\begin{equation}
-		    \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
-		    f(\phi_1) \cdot\cdot\cdot\overset{c_{i-1}}{\lra}
-		    f(\phi_i) \overset{c_{i}}{\lra} f'(\phi_i)
-		    \overset{c_{i+1}}{\lra} f'(\phi_{i + 1})  \cdot
-		    \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+		    \rho_{A\pm 1} = f(q_0) \trans{c_1}
+		    f(\phi_1) \cdot\cdot\cdot\trans{c_{i-1}}
+		    f(\phi_i) \trans{c_{i}} f'(\phi_i)
+		    \trans{c_{i+1}} f'(\phi_{i + 1})  \cdot
+		    \cdot \cdot \trans{c_n} f'(\phi_n)
 		\end{equation}
 	    \end{enumerate}
 
-    In this case, there exists a run:
-
-	\begin{equation}
-	    \rho_{A} = q_0 \overset{c_1}{\lra} \phi_1
-	    \cdot\cdot\cdot \overset{c_{i-1}}{\lra}\phi_i
-	    \overset{c_{i+1}}{\lra} \phi_{i + 1}  \cdot \cdot \cdot
-	    \overset{c_n}{\lra} \phi_n
-	\end{equation}
-
-	Such that every transition is in $A$, therefore the word
-	$r'=c_1\cdot\cdot\cdot c_{i-1} \cdot c_{i+1} \cdot \cdot\cdot
-	c_n$ is in $\mathcal{R}(A)$. And therefore by Levenshtein
-	distance we obtain that $\mathbf{d_\Gamma}(r',r) = 1$.
-	And because of this and because r is valid: 
-    $r \in \mathcal{R}(A) \pm 1$
-
-\textbf{Substitution}
-
-TODO
-
-        \textbf{Elimination}
-
-        TODO
-
-        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
-        \begin{enumerate}
-            \item $\mathbf{d_\Gamma}(r, r') = 0$. Then it is clear that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A \pm 1$ forms an isomorphism with $A$.
-            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case, because of the structure of Levenshtein's distance, there are three possible cases:
-                \begin{enumerate}
-                    \item \textbf{Insertion} $ r = c_1 \cdot ... \cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot ... \cdot c_n$  And $r' = c_1 \cdot ... \cdot c_n$
-
-                        In this case, because there exists a run $\rho_A$ on $r'$ of the form:
-                        \begin{equation*}
-                            \rho_A = q_0 \overset{c_1}{\lra} \phi_1 \cdot\cdot\cdot \phi_i \overset{c_i}{\lra} \phi_{i + 1}  \cdot \cdot \cdot \overset{c_n} \phi_n
-                        \end{equation*}
-
-                        Therefore there exists a run $\rho_{A\pm1}$ on $r$, and it is:
-
-                        \begin{equation*}
-                            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra} f(\phi_1) \cdot\cdot\cdot f(\phi_i) \overset{c_{ins}}{\lra} f'(\phi_i) \overset{c_i}{\lra} f'(\phi_{i + 1})  \cdot \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
-                        \end{equation*}
-                    \item \textbf{Elimination } TODO, Same as above
-                    \item \textbf{Substitution} TODO, Same as above
-                \end{enumerate}
-        \end{enumerate}
-        % Interpreting $A\pm 1$ as an $\epsilon - NFA$, we can conclude that for every $r \in \mathcal{R}(A\pm 1)$ there is a run $\rho$ of $A$ on $r$.
     \end{proof}
 \end{theorem}
 
