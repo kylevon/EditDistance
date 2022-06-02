@@ -51,11 +51,20 @@
 
 \subsection*{Definition of a ref-word}
 
-Given a finite set of variables $V \subseteq \mathrm{SVars}$ we define the alphabet of ref words as: $\Gamma_V \defeq \set{x\vdash, \dashv x}$. And given an alphabet $\Sigma$ such that $\Sigma \cap \Gamma_V = \varnothing$ we can define the set of ref words over $\Sigma$ and $V$ as: $\mathbf{r} \in (\Sigma \cup \Gamma_V)^*$. Next, a ref-word is valid if and only if, every occurance of a variable in the ref-word is opened exactly once and closed afterwards, exactly once.
+Given a finite set of variables $V \subseteq \mathrm{SVars}$ we
+define the alphabet of ref words as: $\Gamma_V \defeq \set{x\vdash,
+\dashv x}$. And given an alphabet $\Sigma$ such that $\Sigma \cap
+\Gamma_V = \varnothing$ we can define the set of ref words over
+$\Sigma$ and $V$ as: $\mathbf{r} \in (\Sigma \cup \Gamma_V)^*$.
+Next, a ref-word is valid if and only if, every occurance of a
+variable in the ref-word is opened exactly once and closed afterwards,
+exactly once.
 
 \subsection*{Functions on ref-words}
 
-We can define the projection of a ref word over a set $S$, $r\uparrow S$, recursively as:\footnote{In the paper (Doleschal, 2021) this operation is defined for $\Sigma$ as doc($\sigma$)}
+We can define the projection of a ref word over a set $S$, $r\uparrow
+S$, recursively as:\footnote{In the paper (Doleschal, 2021) this
+operation is defined for $\Sigma$ as doc($\sigma$)}
 
 \begin{enumerate}
     \item $r \in S \rightarrow r\uparrow S = r$
@@ -67,13 +76,19 @@ We can define the projection of a ref word over a set $S$, $r\uparrow S$, recurs
 Vars(r) is the set of variables $x \in V$ that occurs in the ref-word:
 
         \begin{equation}
-            \mathrm{Vars}(r) := \set{x \in V \st \exists r_x^{pre}, r_x, r_x^{post} \in (\Sigma \cup \Gamma_V)^* \mathrm{\ such\ that\ }r = r_x^{pre} \cdot x \vdash \cdot r_x \cdot \dashv x \cdot r_x^{post})}
+	    \mathrm{Vars}(r) := \set{x \in V \st \exists r_x^{pre},
+	    r_x, r_x^{post} \in (\Sigma \cup \Gamma_V)^* \mathrm{\
+	    such\ that\ }r = r_x^{pre} \cdot x \vdash \cdot r_x
+	    \cdot \dashv x \cdot r_x^{post})}
         \end{equation}
 
-$\mathrm{tup}(r)$ are the positions each ref-word is referencing, and is defined as:
+$\mathrm{tup}(r)$ are the positions each ref-word is referencing,
+and is defined as:
 
 \begin{equation}
-    \mathrm{tup}(r) := \set{x \mapsto [i_x, j_x\rangle \st x \in Vars(R), i_x = \abs{r_x^{pre} \uparrow \Sigma}, j_x = i_x + \abs{r_x \uparrow \Sigma}}
+    \mathrm{tup}(r) := \set{x \mapsto [i_x, j_x\rangle \st x \in
+    Vars(R), i_x = \abs{r_x^{pre} \uparrow \Sigma}, j_x = i_x +
+    \abs{r_x \uparrow \Sigma}}
 \end{equation}
 
 \textbf{Postulate:} 
@@ -94,53 +109,50 @@ is defined as: $\mathbf{d_\Gamma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
 
 \subsection*{Ref-word distance languages}
 
-Given a ref-word language $R \subseteq (\Sigma\cup\Gamma_V)^*$ and a distance $k \in \mathbb{R}$, the k-distance ref-word language is defined as:
+Given a ref-word language $R \subseteq (\Sigma\cup\Gamma_V)^*$ and
+a distance $k \in \mathbb{R}$, the k-distance ref-word language is
+defined as:
 
 \begin{equation}
-    R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \land \mathbf{d_\Gamma}(r, r') \leq k)}
+    R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)},
+    \exists r' (r'\in R \land \mathbf{d_\Gamma}(r, r') \leq k)}
 \end{equation}
 
 Given a document d, the spanner over a ref-word language R is:
 
 \begin{equation}
-    \dbrack{R}_d = \set{\mathrm{tup}(r) \st r\uparrow \Sigma = d, \exists r \in R}
+    \dbrack{R}_d = \set{\mathrm{tup}(r) \st r\uparrow \Sigma = d,
+    \exists r \in R}
 \end{equation}
 
 \newpage
-\begin{theorem}
+\begin{theorem}\label{TheoremMetric}
     If the distance function $\mathbf{d}$ is a metric, then:
     \begin{equation}
         (R\pm n) \pm k = R\pm(n + k)
     \end{equation}
     \begin{proof}
-        Given $n, k \in \mathbb{R}$, we want to prove that: $(R\pm n )\pm k = R \pm (n + k)$.
-        By definition, we have that:
-        \begin{equation*}
-            (R \pm n) \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \pm n \land \mathbf{d_\Gamma}(r, r') \leq k)}
-        \end{equation*}
-        First we prove that $(R \pm n) \pm k \subseteq R \pm (n + k)$. By contradiction let's assume there exists an element $r_1 \in (R \pm n) \pm k$ such that $r_1 \notin R\pm (n + k)$. By the previous definition, we have that $\exists r' \in R\pm n$ such that $\mathbf{d_\Gamma}(r_1, r') \leq k$. By definition of $R \pm (n)$ we have that for any $r \in R$, $\mathbf{d_\Gamma}(r', r) \leq n$. Next, by the definition of $R \pm (n + k)$, and our suposition we have that $\mathbf{d_\Gamma}(r_1, r) > n + k$ which contradicts the triangle inequality. The proof that $R \pm (n + k) \subseteq (R \pm n) \pm k$ uses this same argument.
+	Given $n, k \in \mathbb{R}$, we want to prove that: $(R\pm
+	n )\pm k = R \pm (n + k)$.
+    By definition, we have that:
+    \begin{equation*}
+        (R \pm n) \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \pm n \land \mathbf{d_\Gamma}(r, r') \leq k)}
+    \end{equation*}
+    First we prove that $(R \pm n) \pm k \subseteq R \pm (n + k)$.
+    By contradiction let's assume there exists an element $r_1 \in
+    (R \pm n) \pm k$ such that $r_1 \notin R\pm (n + k)$. By the
+    previous definition, we have that $\exists r' \in R\pm n$ such
+    that $\mathbf{d_\Gamma}(r_1, r') \leq k$. By definition of $R
+    \pm (n)$ we have that for any $r \in R$, $\mathbf{d_\Gamma}(r',
+    r) \leq n$. Next, by the definition of $R \pm (n + k)$, and our
+    suposition we have that $\mathbf{d_\Gamma}(r_1, r) > n + k$
+    which contradicts the triangle inequality. The proof that $R
+    \pm (n + k) \subseteq (R \pm n) \pm k$ uses this same argument.
 
     \end{proof}
 \end{theorem}
 
-
-% Sea A vset automaton. 
-% Exists A^k s.t. 
-% Def lenguaje autómata
-% [[B]_d = [[L(A)]]]^k_d
-% Definir con vset automata. con el de ref words
-% Definir L(A)
-% Definir functional, sequential
-% Demostrar [[B]]_d = [[L(A)]]^k_d.
-%  Al definir B con los edit distances
-% Demostrar que si A es functional
-% B es functional también.
-
-% Tamaño del determinación
-% Ver las transiciones con cierra y abre x's
-
 \subsection*{Variable-set automaton over ref words (VSet-automaton)\footnote{(Doleschal, 2021)}}
-
 
 \begin{definition}
 A VSet-automaton is a sextuple $A:=(\Sigma, V, Q, q_0, Q_F,\delta)$
@@ -150,7 +162,8 @@ A VSet-automaton is a sextuple $A:=(\Sigma, V, Q, q_0, Q_F,\delta)$
     \item $Q$: Finite set of states
     \item $q_0\in Q$: Initial state
     \item $Q_F\subseteq Q$: Set of final states
-    \item $\delta: Q \times (\Sigma\cup\set{\epsilon}\cup\Gamma_V)\ra 2^Q$: Transition function
+    \item $\delta: Q \times (\Sigma\cup\set{\epsilon}\cup\Gamma_V)\ra
+          2^Q$: Transition function
         \begin{itemize}
             \item $\Gamma_V:=\set{x\vdash, \dashv x \st x \in V}$
             \item $2^Q$: power set of Q
@@ -169,33 +182,43 @@ A VSet-automaton is a sextuple $A:=(\Sigma, V, Q, q_0, Q_F,\delta)$
 \end{equation}
 
 \subsubsection*{Ref-word language}
-The ref-word language of A is: $\mathcal{R}(A) = \mathcal{R}^0(A) = \set{r \in \mathcal{L}(A)\subseteq(\Sigma\cup\Gamma_V)^*\st r\mathrm{\ is\ accepted\ by\ the\ \epsilon-NFA\ A}}$. This is direct from interpreting A as an $\epsilon-NFA$.
+The ref-word language of A is: $\mathcal{R}(A) = \mathcal{R}^0(A)
+= \set{r \in \mathcal{L}(A)\subseteq(\Sigma\cup\Gamma_V)^*\st
+r\mathrm{\ is\ accepted\ by\ the\ \epsilon-NFA\ A}}$. This is direct
+from interpreting A as an $\epsilon-NFA$.
 
 \subsubsection*{Run of a VSet-automaton over a ref-word}
 
-Given a ref-word $r = \sigma_1\cdot\cdot\cdot\sigma_n$, the run $\rho$ of $A$ is the sequence:
+Given a ref-word $r = \sigma_1\cdot\cdot\cdot\sigma_n$, the run
+$\rho$ of $A$ is the sequence:
 
 \begin{equation}
-    \rho:=q_0\overset{\sigma_1}{\lra}q_1 \cdot\cdot\cdot q_{n-1} \overset{\sigma_n}{\lra}q_n
+    \rho:=q_0\overset{\sigma_1}{\lra}q_1 \cdot\cdot\cdot q_{n-1}
+    \overset{\sigma_n}{\lra}q_n
 \end{equation}
 
-Where $\forall i \in [0,n)\paren{q_{i+1} \in \delta(q_i,\sigma_{i+1})}$ and $q_n\in Q_F$ 
+Where $\forall i \in [0,n)\paren{q_{i+1} \in \delta(q_i,\sigma_{i+1})}$
+and $q_n\in Q_F$
 
-From previous publications we know that $r \in \mathcal{R}(A)$ if and only if there is a run $\rho$ of A on r.
+From previous publications we know that $r \in \mathcal{R}(A)$ if
+and only if there is a run $\rho$ of A on r.
 
 \newpage
 \subsubsection*{Distance automaton}
 
-Given a VSet-automaton $A$ we can define, under Levenshtein distance, the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
+Given a VSet-automaton $A$ we can define, under Levenshtein distance,
+the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 \begin{itemize}
-    \item $Q' = \set{q_1,...,q_{\abs{Q}}} \cup \set{q^{1}_1, ..., q^{1}_{\abs{Q}}} $ Where there exists two biyective functions:
+    \item $Q' = \set{q_1,...,q_{\abs{Q}}} \cup \set{q^{1}_1, ...,
+    q^{1}_{\abs{Q}}} $ Where there exists two biyective functions:
 
         \begin{enumerate}
             \item $f: Q \ra \set{q_1,...,q_{\abs{Q}}}$ 
             \item $f' : Q \ra \set{q^{1}_1, ..., q^{1}_{\abs{Q}}}$
         \end{enumerate}
 
-        And two biyective functions $F$ and $F'$ that map $f$ and $f'$ respectively to sets.
+	And two biyective functions $F$ and $F'$ that map $f$ and
+	$f'$ respectively to sets.
 
     \item $q_0' = f(q_0)$
 
@@ -203,39 +226,135 @@ Given a VSet-automaton $A$ we can define, under Levenshtein distance, the automa
     \item The function $\delta'$ is defined by:
 
         \begin{equation*}
-        \delta'(q_i, e) = \begin{cases}
+        \delta'(q_i, e) = 
+            \begin{cases}
+
             F(\delta(f^{-1}(q_i), e)) & e \in \Gamma_V\\
-                            F(\delta(f^{-1}(q_i), e)) \cup q_i^1\cup \underset{a \in \Sigma}{\bigcup} F'(\delta(f^{-1}(q_i), a)) & e.o.c
-                          \end{cases}
+                    F(\delta(f^{-1}(q_i), e)) \cup q_i^1\cup
+                    \underset{a \in \Sigma}{\bigcup}
+                    F'(\delta(f^{-1}(q_i), a)) & e.o.c
+
+            \end{cases}
         \end{equation*}
+
         \begin{equation*}
-            \delta'(q_i^1, e) = F(\delta(f^{-1}(q_i), e))
+            \delta'(q_i^1, e) = F'(\delta(f'^{-1}(q_i^1), e))
         \end{equation*}
+
 \end{itemize}
-\begin{theorem}
-    Given a VSet-automaton with a sequential ref-word language $\mathcal{R}(A)$, using Levenshtein distance we obtain that $\mathcal{R}(A \pm 1) = \mathcal{R}(A) \pm 1$
+\begin{definition}\label{defSequential}
+    A ref-word language $R$ is sequential if every ref-word $r \in
+    R$ is valid.
+\end{definition}
+
+\begin{lemma}\label{LemmaTypesOfRuns}
+    All runs of $\mathcal{R}(A)$ have one of the following structures:
+    \begin{enumerate}
+        \item \begin{equation*}
+            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
+            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
+            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_a)
+            \overset{c_{a+1}}{\lra} f'(\phi_{a + 1})  \cdot
+            \cdot \cdot \overset{c_n}{\lra} f'(\phi_{n-1})
+              \end{equation*}
+        \item \begin{equation*}
+            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
+            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
+            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_{a+1})
+            \overset{c_{a+1}}{\lra} f'(\phi_{a + 2})  \cdot
+            \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+              \end{equation*}
+        \item \begin{equation*}
+            \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
+            f(\phi_1) \cdot\cdot\cdot\overset{c_{a-1}}{\lra}
+            f(\phi_a) \overset{c_{a}}{\lra} f'(\phi_{a+2})
+              \cdot
+            \cdot \cdot \overset{c_n}{\lra} f'(\phi_{n + 1})
+              \end{equation*}
+        \item \begin{equation*}
+                \rho_{A\pm1} = f(q_0) \overset{c_1}{\lra} f(\phi_1)
+                \overset{c_2}{\lra} \cdot\cdot\cdot
+                \overset{c_n}{\lra}f(\phi_n)
+              \end{equation*}
+    \end{enumerate}
+    \begin{proof}
+
+    This is direct from the form of the transitions under the definition of $A \pm 1$, and noticing that there is no transition from $f'(q)$ to $f(q)$.
+    \end{proof}
+\end{lemma}
+
+\begin{theorem} \label{TheoremAutomatonPM1}
+    if $\mathcal{R}(A)$ if sequential, then $\mathcal{R}(A \pm 1)$.
+    is sequential.
+    
+    \begin{proof}
+	For purposes of contradiction let's assume that there exists
+	a ref-word $r = c_1 \cdot \cdot\cdot c_n \in A \pm 1$ that
+	is not valid. Then there must exist a run $\rho_{A\pm 1}$
+	on r. Furthermore, If $r = c_1 \cdot\cdot\cdot c_n$ is not
+	valid, then there are two cases:
+    \begin{enumerate}
+	    \item $\exists c_i, c_j$ such that $i < j$ and $c_i =
+            x\dashv, c_j = x\vdash$
+
+    Under the first case of lemma \ref{LemmaTypesOfRuns}, $c_a \not \in \Gamma_V$ from the definition of $A \pm 1$. Therefore, 
+
+            \item $\exists c_i, c_j$ such that $c_i = c_j \in \Gamma_V$
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+\begin{theorem} \label{TheoremAutomatonPM1}
+    Given a VSet-automaton with a sequential ref-word language
+    $\mathcal{R}(A)$, using Levenshtein distance we obtain that
+    $\mathcal{R}(A \pm 1) = \mathcal{R}(A) \pm 1$.
 
     \begin{proof}
-        This is equivalent to proving that, given a refword $r$, $r \in \mathcal{R}(A \pm 1) \leftrightarrow r \in \mathcal{R}(A)\pm 1$. Therefore this is a two part proof.
+	This is equivalent to proving that, given a ref-word $r$,
+	$r \in \mathcal{R}(A \pm 1) \leftrightarrow r \in
+	\mathcal{R}(A)\pm 1$. Therefore this is a two part proof.
 
-        First let's assume that $r \in \mathcal{R}(A \pm 1)$. In that case we know that there must exist a run $\rho$ of $A \pm 1$ on r. First, by definition of $\delta'$ there is no transition from states of the form $q_i^1$ to $q_i$. Therefore, there are two cases:
+	First let's assume that $r \in \mathcal{R}(A \pm 1)$. In
+	that case we know that there must exist a run $\rho$ of $A
+    \pm 1$ on r. r is valid due to the theorem \ref{TheoremApm1Sequential}.
+    By definition of $\delta'$
+	there is no transition from states of the form $q_i^1$ to
+	$q_i$.  Therefore, there are two cases:
         \begin{enumerate}
-            \item There are only states of the form $q_i$. In this case, the subset of nodes and transitions used have an isomorphism to $A$ using the function $f$, therefore, $r \in \mathcal{R}(A)$, and therefore $r \in \mathcal{R}(A) \pm 1$
-            \item There is one transition from a state of the form $q_i$ to $q_i^1$. The respective run of $A \pm 1$ on $r = c_1 \cdot \cdot \cdot c_n$ could have one of three forms:
+	    \item There are only states of the form $q_i$. In this
+            case, the subset of nodes and transitions used have an
+            isomorphism to $A$ using the function $f$, therefore,
+            $r \in \mathcal{R}(A)$, using this and that r is valid
+            we conclude that that$r \in \mathcal{R}(A) \pm 1$
+	    \item There is one transition from a state of the form
+            $q_i$ to $q_i^1$. The respective run of $A \pm 1$ on
+            $r = c_1 \cdot \cdot \cdot c_n$ could have one of three
+            forms:
 
- \textbf{Insertion}
-            \begin{equation}
-                \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra} f(\phi_1) \cdot\cdot\cdot\overset{c_{i-1}}{\lra} f(\phi_i) \overset{c_{i}}{\lra} f'(\phi_i) \overset{c_{i+1}}{\lra} f'(\phi_{i + 1})  \cdot \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
-            \end{equation}
-        \end{enumerate}
+     \textbf{Insertion}
+		\begin{equation}
+		    \rho_{A\pm 1} = f(q_0) \overset{c_1}{\lra}
+		    f(\phi_1) \cdot\cdot\cdot\overset{c_{i-1}}{\lra}
+		    f(\phi_i) \overset{c_{i}}{\lra} f'(\phi_i)
+		    \overset{c_{i+1}}{\lra} f'(\phi_{i + 1})  \cdot
+		    \cdot \cdot \overset{c_n}{\lra} f'(\phi_n)
+		\end{equation}
+	    \end{enumerate}
 
     In this case, there exists a run:
 
-        \begin{equation}
-            \rho_{A\pm 1} = q_0 \overset{c_1}{\lra} \phi_1 \cdot\cdot\cdot \overset{c_{i-1}}{\lra}\phi_i  \overset{c_{i+1}}{\lra} \phi_{i + 1}  \cdot \cdot \cdot \overset{c_n}{\lra} \phi_n
-        \end{equation}
+	\begin{equation}
+	    \rho_{A} = q_0 \overset{c_1}{\lra} \phi_1
+	    \cdot\cdot\cdot \overset{c_{i-1}}{\lra}\phi_i
+	    \overset{c_{i+1}}{\lra} \phi_{i + 1}  \cdot \cdot \cdot
+	    \overset{c_n}{\lra} \phi_n
+	\end{equation}
 
-        Such that every transition is in $A$, therefore the word $r'=c_1\cdot\cdot\cdot c_{i-1} \cdot c_{i+1} \cdot \cdot\cdot c_n$ is in $\mathcal{R}(A)$. And therefore by Levenshtein distance we obtain that $\mathbf{d_\Gamma}(r',r) = 1$. Andtherefore, $r \in \mathcal{R}(A) \pm 1$
+	Such that every transition is in $A$, therefore the word
+	$r'=c_1\cdot\cdot\cdot c_{i-1} \cdot c_{i+1} \cdot \cdot\cdot
+	c_n$ is in $\mathcal{R}(A)$. And therefore by Levenshtein
+	distance we obtain that $\mathbf{d_\Gamma}(r',r) = 1$.
+	And because of this and because r is valid: 
+    $r \in \mathcal{R}(A) \pm 1$
 
 \textbf{Substitution}
 
@@ -267,6 +386,13 @@ TODO
                 \end{enumerate}
         \end{enumerate}
         % Interpreting $A\pm 1$ as an $\epsilon - NFA$, we can conclude that for every $r \in \mathcal{R}(A\pm 1)$ there is a run $\rho$ of $A$ on $r$.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}
+    For any sequential automatons $A$ there exists an automaton B such that $\mathcal{R}(B) = \mathcal{R(A)} \pm k$ for all $k\in \mathbb{N}$ under Levenshtein distance.
+    \begin{proof}
+        Trivial proof using theorems \ref{TheoremMetric} and \ref{TheoremAutomatonPM1}, and induction over k.
     \end{proof}
 \end{theorem}
 
