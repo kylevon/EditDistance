@@ -368,4 +368,15 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 \end{theorem}
 
 
+\section{Alternative Definitions}
+
+\subsection{Navarro 2001}
+The approximate search problem can therefore be stated as follows.
+Given a text $\mathcal{T}$ , a regular expression $\mathcal{E}$,
+an edit distance between strings $d()$, and a distance threshold
+$k$, find all the text positions that start an approximate occurrence
+of E in T , that is, compute the set:
+\begin{equation*}
+    \set{i, \exists j, \exists S \in L(E), d(T_{i...j} , S) \leq k}
+\end{equation*}
 \end{document}
