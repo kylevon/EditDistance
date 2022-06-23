@@ -103,9 +103,9 @@ and is defined as:
 Next, given two ref words $r_1, r_2 \in (\Sigma \cup \Gamma_V)$ and
 a distance function 
 $\mathbf{d} : \Sigma^* \times \Sigma^* \rightarrow \mathbb{R}$
-the distance $\mathbf{d_\Gamma}$ between $r_1$ and $r_2$
-is defined as: $\mathbf{d_\Gamma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
-\Sigma, r_2 \uparrow \Sigma)$
+the distance $\mathbf{d_\Sigma}$ between $r_1$ and $r_2$
+is defined as: $\mathbf{d_\Sigma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
+\Sigma, r_2 \uparrow \Sigma)$ and the distance $\mathbf{d_{\Gamma}}$ is defined extending the distance function $\mathbf{b}$ over $\Sigma\cup \Gamma_V$, treating letters in $\Gamma_V$ equivalently as words in $\Sigma$. 
 
 \subsection*{Ref-word distance languages}
 
@@ -115,7 +115,7 @@ defined as:
 
 \begin{equation}
     R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)},
-    \exists r' (r'\in R \land \mathbf{d_\Gamma}(r, r') \leq k)}
+    \exists r' (r'\in R \land \mathbf{d_\Sigma}(r, r') = \mathbf{d_\Gamma}(r, r')\leq k }
 \end{equation}
 
 Given a document d, the spanner over a ref-word language R is:
@@ -136,16 +136,16 @@ Given a document d, the spanner over a ref-word language R is:
 	n )\pm k = R \pm (n + k)$.
     By definition, we have that:
     \begin{equation*}
-        (R \pm n) \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \pm n \land \mathbf{d_\Gamma}(r, r') \leq k)}
+        (R \pm n) \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)}, \exists r' (r'\in R \pm n \land \mathbf{d_\Sigma}(r, r') \leq k)}
     \end{equation*}
     First we prove that $(R \pm n) \pm k \subseteq R \pm (n + k)$.
     By contradiction let's assume there exists an element $r_1 \in
     (R \pm n) \pm k$ such that $r_1 \notin R\pm (n + k)$. By the
     previous definition, we have that $\exists r' \in R\pm n$ such
-    that $\mathbf{d_\Gamma}(r_1, r') \leq k$. By definition of $R
-    \pm (n)$ we have that for any $r \in R$, $\mathbf{d_\Gamma}(r',
+    that $\mathbf{d_\Sigma}(r_1, r') \leq k$. By definition of $R
+    \pm (n)$ we have that for any $r \in R$, $\mathbf{d_\Sigma}(r',
     r) \leq n$. Next, by the definition of $R \pm (n + k)$, and our
-    suposition we have that $\mathbf{d_\Gamma}(r_1, r) > n + k$
+    suposition we have that $\mathbf{d_\Sigma}(r_1, r) > n + k$
     which contradicts the triangle inequality. The proof that $R
     \pm (n + k) \subseteq (R \pm n) \pm k$ uses this same argument.
 
@@ -248,7 +248,7 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 \end{definition}
 
 \begin{lemma}\label{LemmaTypesOfRuns}
-    All runs of $\mathcal{R}(A)$ have one of the following structures:
+    All runs of $\mathcal{R}(A\pm 1)$ have one of the following structures:
     \begin{enumerate}
         \item \begin{equation*}
             \rho_{A\pm 1} = f(q_0) \trans{c_1}
@@ -303,9 +303,8 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
         contradiction, because variables in all other characters
         open exactly once, and close exactly once only after they
         are opened by the definition of a valid ref-word.
-        \item \textbf{Substitution}
-        \item \textbf{Elimination}
-        \item \textbf{No modification}
+        \item \textbf{Substitution, Elimination} Follow the same argument, in that the word changed is not in $\Gamma_V$.
+        \item \textbf{No modification} Trivial.
         \end{enumerate}
     \end{proof}
 \end{theorem}
@@ -331,11 +330,10 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 
 	    And therefore, $c_1 \cdot\cdot\cdot c_a \cdot c_{a+2}
 	    \cdot\cdot\cdot c_n \in \mathcal{R}(A)$. And because
-	    there is a Levenshtein distance of 1 with r, and r is
+	    the extended Levenshtein distance is of 1, and r is
 	    valid, then $r \in \mathcal{R}(A) \pm 1$
             
-        \item \textbf{Substitution}
-        \item \textbf{Elimination}
+    \item \textbf{Substitution, Elimination}: Follow the same argument, changing the sequence into a word and therefore, using the definitions of transitions arriving to a word in $\mathcal{R}(A)$.
         \item \textbf{No modification}: In this case, we can obtain a run over the same word
             in $\mathcal{R}(A)$, and therefore, by definition of $\mathcal{R}(A)
             \pm 1$ we obtain that $r \in \mathcal{R}(A)$
@@ -343,21 +341,20 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 
 
 
-        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
+        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Sigma}(r, r') = \mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
         \begin{enumerate}
-            \item $\mathbf{d_\Gamma}(r, r') = 0$. Then it is clear
+            \item $\mathbf{d_\Sigma}(r, r') = 0$. Then it is clear
             that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A
             \pm 1$ forms an isomorphism with $A$.
 
-            \item $\mathbf{d_\Gamma}(r, r') = 1$. In this case,
+            \item $\mathbf{d_\Sigma}(r, r') = 1$. In this case,
             because of the structure of Levenshtein's distance,
             there are three possible cases:
 
             \begin{itemize}
                 \item \textbf{Insertion}. In this case the word r looks like:
-                    $c_1 \cdot\cdot\cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot\cdot\cdot c_n$
-                \item \textbf{Substitution}
-                \item \textbf{Elimination}
+                    $c_1 \cdot\cdot\cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot\cdot\cdot c_n$. Furthermore, $c_{inserted} \in \Sigma$ because if not, $\mathbf{d_\Gamma}(r,r') > \mathbf{d_\Sigma}(r,r')$. Next, since $c_1\cdot\cdot\cdot c_n \in \mathcal{R}(A)$ this word is accepted by the automaton $A\pm1$ by the definitions of the transitions.
+                \item \textbf{Substitution / Elimination} Same arguments as Insertion.
             \end{itemize}
         \end{enumerate}
     \end{proof}
@@ -369,5 +366,6 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
         Trivial proof using theorems \ref{TheoremMetric} and \ref{TheoremAutomatonPM1}, and induction over k.
     \end{proof}
 \end{theorem}
+
 
 \end{document}
