@@ -375,8 +375,14 @@ The approximate search problem can therefore be stated as follows.
 Given a text $\mathcal{T}$ , a regular expression $\mathcal{E}$,
 an edit distance between strings $d()$, and a distance threshold
 $k$, find all the text positions that start an approximate occurrence
-of E in T , that is, compute the set:
+of $\mathcal{E}$ in $\mathcal{T}$, that is, compute the set:
 \begin{equation*}
-    \set{i, \exists j, \exists S \in L(E), d(T_{i...j} , S) \leq k}
+    \set{i, \exists j, \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j} , S) \leq k}
 \end{equation*}
+
+\subsection{Brainstorming - Vrgoc}
+\begin{equation*}
+    \set{(i, j, k') \st \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j},S) = k' \leq k}
+\end{equation*}
+But instead returning the tup(r)'s of the whole match.
 \end{document}
