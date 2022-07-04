@@ -394,6 +394,22 @@ distance from $\mathcal{E}$. That is:
 
 This definition is used in: (Wu, 1992), (Kucherov, 2005), (Farach-Colton, 2007), (Karkkainen, 2007)
 
+\subsection{All-match Approximate String Join}
+Given two string lists $\mathcal{S}$ and $\mathcal{T}$, a similarity measure $sim(S, T)$ and a real number $\theta \in [0,1]$. Find a set of string pairs $\mathcal{R}$ consisting of all string pairs $(S, T) \in \mathcal{S} \times \mathcal{R}$ where $sim(S,T) \geq \theta$ holds.
+
+Defined in the thesis (xu, 2021)
+
+\subsection{Top-k Approximate String Join}
+
+Given two string lists $\mathcal{S}$ and $\mathcal{T}$, a similarity measure $sim(S, T)$ and a positive integer k. Find a set of string pairs $\mathcal{R}$ of at most k items, such that every $(S,T) \in \mathcal{R}$ satisfies $sim(S,T) \geq sim(P, Q)$ where (P, Q) can be any string pair from $\mathcal{S} \times \mathcal{T} \backslash R$
+
+Defined in the thesis (xu, 2021)
+
+\subsection{K mismatches variation}
+The pattern P' is an occurance of $P = p_0 \cdot \cdot\cdot p_{m-1}$ if $|P| = |P'|$ and P' has at most k mismatches with P. Find all occurances of $P$ in the document T.
+
+This definition is used in (Fiori, 2021)
+
 \subsection{Brainstorming - Vrgoc}
 \begin{equation*}
     \set{(i, j, k') \st \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j},S) = k' \leq k}
