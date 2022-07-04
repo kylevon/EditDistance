@@ -2,3 +2,4 @@
 *.out
 *.log
 latex/*.pdf
+*.DS_Store
