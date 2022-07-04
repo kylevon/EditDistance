@@ -370,8 +370,8 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 
 \section{Alternative Definitions}
 
-\subsection{Navarro 2001}
-The approximate search problem can therefore be stated as follows.
+\subsection{Index Approximate String Matching}
+
 Given a text $\mathcal{T}$ , a regular expression $\mathcal{E}$,
 an edit distance between strings $d()$, and a distance threshold
 $k$, find all the text positions that start an approximate occurrence
@@ -379,6 +379,20 @@ of $\mathcal{E}$ in $\mathcal{T}$, that is, compute the set:
 \begin{equation*}
     \set{i, \exists j, \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j} , S) \leq k}
 \end{equation*}
+
+This definition is used in (Navarro, 2001), (Kucherov, 2015)
+
+\subsection{Substring Approximate String Matching}
+
+Given a text $\mathcal{T}$ , a regular expression $\mathcal{E}$,
+an edit distance between strings $d()$, and a distance threshold
+$k$, find all the substrings that in T that are have less than k
+distance from $\mathcal{E}$. That is:
+\begin{equation*}
+    \set{\mathcal{T}_{i...j}, \exists i, \exists j, \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j} , S) \leq k}
+\end{equation*}
+
+This definition is used in: (Wu, 1992), (Kucherov, 2005), (Farach-Colton, 2007), (Karkkainen, 2007)
 
 \subsection{Brainstorming - Vrgoc}
 \begin{equation*}
