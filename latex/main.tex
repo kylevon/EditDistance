@@ -115,7 +115,7 @@ defined as:
 
 \begin{equation}
     R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)},
-    \exists r' (r'\in R \land \mathbf{d_\Sigma}(r, r') = \mathbf{d_\Gamma}(r, r')\leq k }
+    \exists r' (r'\in R \land \mathbf{d_\Sigma}(r, r') \leq k }
 \end{equation}
 
 Given a document d, the spanner over a ref-word language R is:
@@ -309,6 +309,7 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
     \end{proof}
 \end{theorem}
 \begin{theorem} \label{TheoremAutomatonPM1}
+    \textbf{This theorem is wrong}.
     Given a VSet-automaton with a sequential ref-word language
     $\mathcal{R}(A)$, using Levenshtein distance we obtain that
     $\mathcal{R}(A \pm 1) = \mathcal{R}(A) \pm 1$.
