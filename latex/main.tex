@@ -99,13 +99,30 @@ and is defined as:
 
 \subsection*{Distance between two ref words}
 
+We first define three posible ``edits'' on a word $w = w_1 \cdot\cdot\cdot w_n$:
 
-Next, given two ref words $r_1, r_2 \in (\Sigma \cup \Gamma_V)$ and
-a distance function 
-$\mathbf{d} : \Sigma^* \times \Sigma^* \rightarrow \mathbb{R}$
-the distance $\mathbf{d_\Sigma}$ between $r_1$ and $r_2$
-is defined as: $\mathbf{d_\Sigma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
-\Sigma, r_2 \uparrow \Sigma)$ and the distance $\mathbf{d_{\Gamma}}$ is defined extending the distance function $\mathbf{b}$ over $\Sigma\cup \Gamma_V$, treating letters in $\Gamma_V$ equivalently as words in $\Sigma$. 
+\begin{enumerate}
+    \item $(w, w') \in \Delta_{sub} \iff |w| = |w'| \land \exists! i (w_i \not= w'_i \land w_i \in \Sigma \land w'_i \in \Sigma)$
+    \item $(w, w') \in \Delta_{insert} \iff |w| = |w'| + 1 \land \exists i (\forall j < i(w_j = w'_j) \land \forall j \geq i (w_j = w'_{j+1}) \land w'_i \in \Sigma)$
+    \item $(w, w') \in \Delta_{delete} \iff (w', w) \in \Delta_{insert}$
+\end{enumerate}
+
+Next, given the allowed edits $\Delta \subseteq \set{\Delta_{sub}, \Delta_{insert}, \Delta_{delete}}$. If there is a sequence of edits such that we obtain a sequence of words $w^1 , ..., w^n$ such that $(w^i, w^{i+1}) \in \bigcup \Delta$, then the length of the smallest of such sequences is the edit-distance of $w^1$ and $w^n$. Formally: 
+
+\begin{equation}
+    \mathbf{d}_\Delta(w, w') = min\paren{\set{ 
+        \abs{seq} \st seq \in \set{
+            (w^1,...,w^n) \st w^1 = w \land w^n = w' \land (w^i, w^{i+1}) \in \bigcup \Delta
+        }
+    }}
+\end{equation}
+
+If $\Delta = \set{\Delta_{sub}, \Delta_{insert}, \Delta_{delete}}$ then $\mathbf{d}_{\Delta}$ is the ref-word Levenshtein distance. $\mathbf{d}_{\Delta_{sub}}$ is the Hamming distance.
+\\
+
+
+Note that if we define the distance as $\mathbf{d_\Sigma}(r_1, r_2) = \mathbf{d}(r_1 \uparrow
+\Sigma, r_2 \uparrow \Sigma)$, then the positions of all variables don't affect the distance.
 
 \subsection*{Ref-word distance languages}
 
@@ -115,7 +132,7 @@ defined as:
 
 \begin{equation}
     R \pm k = \set{r \in (\Sigma \cup \Gamma_V)^* \st  \mathrm{valid(r)},
-    \exists r' (r'\in R \land \mathbf{d_\Sigma}(r, r') \leq k }
+    \exists r' (r'\in R \land \mathbf{d_\Delta}(r, r') \leq k }
 \end{equation}
 
 Given a document d, the spanner over a ref-word language R is:
@@ -309,7 +326,6 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
     \end{proof}
 \end{theorem}
 \begin{theorem} \label{TheoremAutomatonPM1}
-    \textbf{This theorem is wrong}.
     Given a VSet-automaton with a sequential ref-word language
     $\mathcal{R}(A)$, using Levenshtein distance we obtain that
     $\mathcal{R}(A \pm 1) = \mathcal{R}(A) \pm 1$.
@@ -342,7 +358,7 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 
 
 
-        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Sigma}(r, r') = \mathbf{d_\Gamma}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
+        Next, let's assume that $r \in \mathcal{R}(A) \pm 1$. In that case, r is valid, and there exists $r' \in R$ such that using Levenshtein distance: $\mathbf{d_\Delta}(r, r') = \mathbf{d_\Delta}(r, r') \leq 1$. Since Levenshtein distance is discrete, there are two cases:
         \begin{enumerate}
             \item $\mathbf{d_\Sigma}(r, r') = 0$. Then it is clear
             that $r \in \mathcal{R}(A \pm 1)$ since a subset of $A
@@ -354,7 +370,12 @@ the automaton $A \pm 1:= (\Sigma, V, Q', q_0', Q_F', \delta')$ Where
 
             \begin{itemize}
                 \item \textbf{Insertion}. In this case the word r looks like:
-                    $c_1 \cdot\cdot\cdot c_i \cdot c_{inserted} \cdot c_{i + 1} \cdot\cdot\cdot c_n$. Furthermore, $c_{inserted} \in \Sigma$ because if not, $\mathbf{d_\Gamma}(r,r') > \mathbf{d_\Sigma}(r,r')$. Next, since $c_1\cdot\cdot\cdot c_n \in \mathcal{R}(A)$ this word is accepted by the automaton $A\pm1$ by the definitions of the transitions.
+		    $c_1 \cdot\cdot\cdot c_i \cdot c_{inserted}
+		    \cdot c_{i + 1} \cdot\cdot\cdot c_n$. Furthermore,
+		    $c_{inserted} \in \Sigma$ by definition.
+		    By definition we obtain that $c_1\cdot\cdot\cdot c_n \in
+		    \mathcal{R}(A)$ and therefore, this word is accepted by the
+		    automaton $A\pm1$.
                 \item \textbf{Substitution / Elimination} Same arguments as Insertion.
             \end{itemize}
         \end{enumerate}
@@ -416,4 +437,9 @@ This definition is used in (Fiori, 2021)
     \set{(i, j, k') \st \exists S \in L(\mathcal{E}), d(\mathcal{T}_{i...j},S) = k' \leq k}
 \end{equation*}
 But instead returning the tup(r)'s of the whole match.
+
+\section{Possible extensions}
+
+Since there are so many possible results obtained through this method, it would be useful to only return optimal results. One possibility is to return the local minimums. That is, the tuples where the distance is minimized with respect to their neighbors.
+
 \end{document}
