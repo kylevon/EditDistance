@@ -102,7 +102,7 @@ and is defined as:
 We first define three posible ``edits'' on a word $w = w_1 \cdot\cdot\cdot w_n$:
 
 \begin{enumerate}
-    \item $(w, w') \in \Delta_{sub} \iff |w| = |w'| \land \exists! i (w_i \not= w'_i \land w_i \in \Sigma \land w'_i \in \Sigma)$
+    \item $(w, w') \in \Delta_{sub} \iff |w| = |w'| \land \exists i (w_i \not= w'_i \land \forall j \not= i(w_j = w'_j) \land w_i \in \Sigma \land w'_i \in \Sigma)$
     \item $(w, w') \in \Delta_{insert} \iff |w| = |w'| + 1 \land \exists i (\forall j < i(w_j = w'_j) \land \forall j \geq i (w_j = w'_{j+1}) \land w'_i \in \Sigma)$
     \item $(w, w') \in \Delta_{delete} \iff (w', w) \in \Delta_{insert}$
 \end{enumerate}
